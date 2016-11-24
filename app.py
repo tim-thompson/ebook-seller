@@ -1,5 +1,4 @@
-from flask import Flask, render_template, abort
-from flask import send_from_directory
+from flask import Flask, render_template, abort, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -39,3 +38,4 @@ def download(uuid):
 
 if __name__ == "__main__":
     app.run()
+    db.create_all()
