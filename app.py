@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 # App initialisation
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/test.db"
 db = SQLAlchemy(app)
 
 
@@ -42,5 +43,5 @@ def download(uuid):
 
 # Main app
 if __name__ == "__main__":
-    app.run()
     db.create_all()
+    app.run()
