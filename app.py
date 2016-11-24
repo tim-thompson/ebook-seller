@@ -7,7 +7,7 @@ app = Flask(__name__)
 db = SQLAlchemy(app)
 
 
-# Purchase Model
+# Purchase model
 class Purchase(db.Model):
     __tablename__ = "purchases"
     uuid = db.Column(db.Integer, primary_key=True)
@@ -40,7 +40,7 @@ def download(uuid):
         abort(404)
 
 
-# Main App
+# Main app
 if __name__ == "__main__":
     app.run()
     db.create_all()
