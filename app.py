@@ -1,10 +1,13 @@
+# Imports
 from flask import Flask, render_template, abort, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 
+# App initialisation
 app = Flask(__name__)
 db = SQLAlchemy(app)
 
 
+# Purchase Model
 class Purchase(db.Model):
     __tablename__ = "purchases"
     uuid = db.Column(db.Integer, primary_key=True)
@@ -12,6 +15,7 @@ class Purchase(db.Model):
     downloads_left = db.Column(db.Integer)
 
 
+# Routes
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -36,6 +40,7 @@ def download(uuid):
         abort(404)
 
 
+# Main App
 if __name__ == "__main__":
     app.run()
     db.create_all()
