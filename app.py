@@ -2,6 +2,7 @@
 from flask import Flask, render_template, abort, send_from_directory, request
 from flask_sqlalchemy import SQLAlchemy
 import stripe
+import uuid
 
 # App initialisation
 app = Flask(__name__)
@@ -15,12 +16,13 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys["secret_key"]
 
+
 # Purchase model
 class Purchase(db.Model):
     __tablename__ = "purchases"
-    uuid = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String, primary_key=True)
     email = db.Column(db.String)
-    downloads_left = db.Column(db.Integer)
+    downloads_left = db.Column(db.Integer, default=5)
 
 
 # Routes
@@ -45,6 +47,11 @@ def purchase():
         description="E-Book purchase"
     )
 
+    purchase = Purchase(uuid=str(uuid.uuid4()), email=request.form["stripeEmail"])
+    print (purchase.uuid)
+    db.session.add(purchase)
+    db.session.commit()
+
     return render_template("charge.html", amount=amount)
 
 
@@ -57,7 +64,9 @@ def download(uuid):
         else:
             purchase.downloads_left -= 1
             db.session.commit()
-            return send_from_directory("downloads", "book.pdf")
+            print (purchase.downloads_left)
+            #return send_from_directory("downloads", "book.pdf")
+            return "You still have downloads remaining"
     else:
         abort(404)
 
