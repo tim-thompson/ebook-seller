@@ -87,9 +87,9 @@ def download(uuid):
 
 # Helper Functions
 def send_email(to, subject, **kwargs):
-    msg = Message("E-Book Download", sender="woo@tim.co.uk", recipients=[to])
-    msg.body = render_template("download.txt", **kwargs)
-    msg.html = render_template("download.html", **kwargs)
+    msg = Message(subject=subject, sender="woo@tim.co.uk", recipients=[to])
+    msg.body = render_template("email/download.txt", **kwargs)
+    msg.html = render_template("email/download.html", **kwargs)
     thr = Thread(target=send_async_email, args=[app, msg])
     thr.start()
     return thr
