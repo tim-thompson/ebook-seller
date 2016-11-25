@@ -3,19 +3,23 @@ from flask import Flask, render_template, abort, send_from_directory, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from threading import Thread
-import stripe
-import uuid
+import stripe, uuid, json
+
+# Load Config
+with open("config.json", "r") as f:
+    config = json.load(f)
 
 # App initialisation
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/test.db"
 db = SQLAlchemy(app)
-app.config["MAIL_SERVER"] = "smtp.google.com"
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = "username"
-app.config["MAIL_PASSWORD"] = "password"
 mail = Mail(app)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = config["db_address"]
+app.config["MAIL_SERVER"] = config["mail_server"]
+app.config["MAIL_PORT"] = config["mail_port"]
+app.config["MAIL_USE_TLS"] = config["mail_use_tls"]
+app.config["MAIL_USERNAME"] = config["mail_username"]
+app.config["MAIL_PASSWORD"] = config["mail_password"]
 
 stripe_keys = {
     "secret_key": "sk_test_5WBtu8XKaANm4aeEImkEP6nO",
