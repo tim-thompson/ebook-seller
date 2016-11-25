@@ -58,7 +58,7 @@ def purchase():
     purchase = Purchase(uuid=str(uuid.uuid4()), email=request.form["stripeEmail"])
     send_email(request.form["stripeEmail"], "Your Download is Ready", uuid=purchase.uuid)
 
-    print (purchase.uuid)
+    print(purchase.uuid)
     db.session.add(purchase)
     db.session.commit()
 
@@ -74,7 +74,7 @@ def download(uuid):
         else:
             purchase.downloads_left -= 1
             db.session.commit()
-            print (purchase.downloads_left)
+            print(purchase.downloads_left)
             return send_from_directory("downloads", "book.pdf")
     else:
         abort(404)
