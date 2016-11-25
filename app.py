@@ -65,8 +65,7 @@ def download(uuid):
             purchase.downloads_left -= 1
             db.session.commit()
             print (purchase.downloads_left)
-            #return send_from_directory("downloads", "book.pdf")
-            return "You still have downloads remaining"
+            return send_from_directory("downloads", "book.pdf")
     else:
         abort(404)
 
