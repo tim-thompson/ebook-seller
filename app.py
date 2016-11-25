@@ -5,25 +5,26 @@ from flask_mail import Mail, Message
 from threading import Thread
 import stripe, uuid, json
 
-# Load Config
-with open("config.json", "r") as f:
-    config = json.load(f)
 
 # App initialisation
 app = Flask(__name__)
 db = SQLAlchemy(app)
 mail = Mail(app)
 
+# Load Config
+with open("config.json", "r") as f:
+    config = json.load(f)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = config["db_address"]
-app.config["MAIL_SERVER"] = config["mail_server"]
-app.config["MAIL_PORT"] = config["mail_port"]
-app.config["MAIL_USE_TLS"] = config["mail_use_tls"]
-app.config["MAIL_USERNAME"] = config["mail_username"]
-app.config["MAIL_PASSWORD"] = config["mail_password"]
+app.config["MAIL_SERVER"] = config["mail"]["server"]
+app.config["MAIL_PORT"] = config["mail"]["port"]
+app.config["MAIL_USE_TLS"] = config["mail"]["tls"]
+app.config["MAIL_USERNAME"] = config["mail"]["username"]
+app.config["MAIL_PASSWORD"] = config["mail"]["password"]
 
 stripe_keys = {
-    "secret_key": "sk_test_5WBtu8XKaANm4aeEImkEP6nO",
-    "publishable_key": "pk_test_jXjLvVkpCCkbNksMR4atuIpf"
+    "secret_key": config["stripe"]["secret_key"],
+    "publishable_key": config["stripe"]["publishable_key"]
 }
 
 stripe.api_key = stripe_keys["secret_key"]
