@@ -1,6 +1,8 @@
 # Imports
 from flask import Flask, render_template, abort, send_from_directory, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
+from threading import Thread
 import stripe
 import uuid
 
@@ -8,6 +10,12 @@ import uuid
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/test.db"
 db = SQLAlchemy(app)
+app.config["MAIL_SERVER"] = "smtp.google.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = "username"
+app.config["MAIL_PASSWORD"] = "password"
+mail = Mail(app)
 
 stripe_keys = {
     "secret_key": "sk_test_5WBtu8XKaANm4aeEImkEP6nO",
@@ -48,6 +56,8 @@ def purchase():
     )
 
     purchase = Purchase(uuid=str(uuid.uuid4()), email=request.form["stripeEmail"])
+    send_email(request.form["stripeEmail"], "Your Download is Ready", uuid=purchase.uuid)
+
     print (purchase.uuid)
     db.session.add(purchase)
     db.session.commit()
@@ -68,6 +78,21 @@ def download(uuid):
             return send_from_directory("downloads", "book.pdf")
     else:
         abort(404)
+
+
+# Helper Functions
+def send_email(to, subject, **kwargs):
+    msg = Message("E-Book Download", sender="woo@tim.co.uk", recipients=[to])
+    msg.body = render_template("download.txt", **kwargs)
+    msg.html = render_template("download.html", **kwargs)
+    thr = Thread(target=send_async_email, args=[app, msg])
+    thr.start()
+    return thr
+
+
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
 
 
 # Main app
