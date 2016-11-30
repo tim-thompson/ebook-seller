@@ -1,0 +1,14 @@
+{
+  "db_address": "database_uri",
+  "mail": {
+    "server": "mail_server",
+    "port": 587,
+    "tls": true,
+    "username": "username",
+    "password": "password"
+  },
+  "stripe": {
+    "secret_key": "SECRET_KEY",
+    "publishable_key": "PUBLIC_KEY"
+  }
+}
